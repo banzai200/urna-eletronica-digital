@@ -510,7 +510,7 @@ function searchCandidates(obj, stage, prefix) {
     const matchCandidatesObj = Object.keys(candidatesObj)
         .filter(key => key.startsWith(prefix))
         .reduce((acc, key) => {
-            acc[key] = { ...candidatesObj[key] };
+            acc[key] = Object.assign({}, candidatesObj[key]);
             return acc;
         }, {});
 
@@ -868,7 +868,9 @@ function generateVerifyId() {
 async function generateHash(text) {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-512", data);
+    // Safari 10.1 (iOS 10.3) só expõe a Web Crypto API com o prefixo "webkit"
+    const subtle = crypto.subtle || crypto.webkitSubtle;
+    const hashBuffer = await subtle.digest("SHA-512", data);
     
     // Converter para string hexadecimal
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -1015,6 +1017,50 @@ controlsBtn.addEventListener('click', async (e) => {
         restartVoting();
     }
 });
+
+/* CONTROLE DE TELA CHEIA */
+(() => {
+    const btn = getElId('fullscreen-btn');
+    const requestFullscreen = document.documentElement.requestFullscreen
+        || document.documentElement.webkitRequestFullscreen
+        || document.documentElement.mozRequestFullScreen
+        || document.documentElement.msRequestFullscreen;
+
+    // Fullscreen API indisponível (ex.: Safari no iPhone) - esconde o botão
+    if (!requestFullscreen) {
+        btn.classList.add('display-none');
+        return;
+    }
+
+    const getFullscreenElement = () => document.fullscreenElement
+        || document.webkitFullscreenElement
+        || document.mozFullScreenElement
+        || document.msFullscreenElement;
+
+    const exitFullscreen = () => {
+        const exit = document.exitFullscreen
+            || document.webkitExitFullscreen
+            || document.mozCancelFullScreen
+            || document.msExitFullscreen;
+        exit.call(document);
+    };
+
+    btn.addEventListener('click', () => {
+        if (getFullscreenElement()) {
+            exitFullscreen();
+        } else {
+            requestFullscreen.call(document.documentElement);
+        }
+    });
+
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+        document.addEventListener(evt, () => {
+            const isFullscreen = !!getFullscreenElement();
+            btn.title = isFullscreen ? 'Sair da tela cheia' : 'Tela cheia';
+            btn.setAttribute('aria-label', btn.title);
+        });
+    });
+})();
 
 /*INICIAR APLICAÇÃO */
 (() => {

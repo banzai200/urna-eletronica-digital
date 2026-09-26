@@ -17,6 +17,7 @@ body {
     grid-template-rows: 1fr auto;
     min-height: 100vh;
     font-family: Arial, Helvetica, sans-serif;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -35,9 +36,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 50px;
     background-color: #DAD4C8;
     border-radius: 10px;
+}
+
+/* "gap" no flexbox só é suportado a partir do Safari 14.1; usar margem como alternativa */
+.urna > *:not(:last-child) {
+    margin-right: 50px;
 }
 
 /* ESTILOS DA TELA DA URNA */
@@ -57,7 +62,7 @@ body {
     padding: 5px;
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
 }
 
 .display__header-left {
@@ -91,7 +96,7 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 .display__main__message {
@@ -116,7 +121,7 @@ body {
 }
 
 .main__message--end {
-    justify-content: end;
+    justify-content: flex-end;
     font-size: 160px;
 }
 
@@ -124,7 +129,7 @@ body {
     padding: 0 10%;
     padding-top: 10%;
     font-weight: 600;
-    align-items: start;
+    align-items: flex-start;
 }
 
 .main__message__saving-bar {
@@ -168,8 +173,11 @@ body {
 .display__data {
     display: flex;
     align-items: center;
-    gap: 3px;
     font-size: 16px;
+}
+
+.display__data > *:not(:last-child) {
+    margin-right: 3px;
 }
 
 .display__number__input {
@@ -253,7 +261,7 @@ body {
     right: 0;
     display: flex;
     flex-direction: column;
-    align-items: end;
+    align-items: flex-end;
 }
 
 .urna__display__photo-box {
@@ -276,7 +284,10 @@ body {
 
 .urna__display__vice-photo{
     display: flex;
-    gap: 5px;
+}
+
+.urna__display__vice-photo > *:not(:last-child) {
+    margin-right: 5px;
 }
 
 .vice__photo {
@@ -333,7 +344,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 15px;
+}
+
+.urna__keyboard__actions > *:not(:last-child) {
+    margin-right: 15px;
 }
 
 .urna__keyboard__blank {
@@ -381,11 +395,10 @@ body {
     margin-bottom: 50px;
     display: flex;
     justify-content: center;
-    gap: 10px;
 }
 
 .control__button {
-    margin: 0 10px;
+    margin: 0 15px;
     padding: 10px 20px;
     font-size: 20px;
     font-weight: 600;
@@ -585,6 +598,7 @@ body {
     justify-content: center;
 }
 .candidates-list__div {
+    max-width: 990px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -606,14 +620,17 @@ body {
 
 .candidates-list__body {
     width: 100%;
+    max-height: 65vh;
     padding: 0 10px;
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-y: auto;
 }
 
 .candidates-list__card {
     width: 130px;
-    margin: 15px 0;
+    margin: 15px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -696,7 +713,11 @@ body {
         width: 600px;
         height: 720px;
         flex-direction: column;
-        gap: 25px;
+    }
+
+    .urna > *:not(:last-child) {
+        margin-right: 0;
+        margin-bottom: 25px;
     }
 
     .urna__keyboard {
@@ -849,6 +870,30 @@ body {
         font-size: 16px;
         letter-spacing: 0.5px;
     }
+}
+
+/* BOTÃO DE TELA CHEIA */
+.fullscreen-btn {
+    width: 34px;
+    height: 34px;
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3F3B3A;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.fullscreen-btn:hover {
+    opacity: 0.8;
 }
 
 /* MODIFICADORES DE CLASSES PARA O JS */
